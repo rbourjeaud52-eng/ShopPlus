@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - scripts/smoke_https.py
+      - scripts/diagnose_public_api.py
       - .github/workflows/shopplus-staging-smoke.yml
   workflow_dispatch:
 
