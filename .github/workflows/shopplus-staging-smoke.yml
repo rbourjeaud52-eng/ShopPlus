@@ -34,6 +34,9 @@ jobs:
           python-version: "3.11"
       - name: Vérifier HTTPS, catalogue, devis, paiement test, droits anonymes
         run: python scripts/smoke_https.py
+      - name: Diagnostiquer le transport API public en cas d'échec
+        if: failure()
+        run: python scripts/diagnose_public_api.py
       - name: Afficher les limites de validation
         if: success()
         run: |
