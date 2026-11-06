@@ -15,9 +15,10 @@ from dataclasses import dataclass
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
+# Route API publiée par le client SDK du déploiement (pas le domaine de la SPA).
 BASE_URL = os.environ.get(
-    "SHOPPLUS_STAGING_URL",
-    "https://shopplus-haiti-pilote-ub21b4.v2.appdeploy.ai",
+    "SHOPPLUS_API_URL",
+    "https://api-v2.appdeploy.ai/app/shopplus-haiti-pilote-ub21b4",
 ).rstrip("/")
 TIMEOUT = 12
 
