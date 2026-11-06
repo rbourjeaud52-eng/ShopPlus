@@ -18,7 +18,7 @@ print("Landing:", status, mime, "size", len(html))
 print("Script URLs:", re.findall(r'<script[^>]+src=["\']([^"\']+)', html)[:8])
 print("Meta data:", re.findall(r'<meta[^>]+(?:name|content)=["\'][^"\']+', html)[:8])
 for src in re.findall(r'<script[^>]+src=["\']([^"\']+)', html):
-    if "overlay" in src: continue
+    if "overlay" in src or "/assets/" not in src: continue
     url = urljoin(BASE, src)
     try: code, typ, bundle = get(url)
     except Exception as e:
