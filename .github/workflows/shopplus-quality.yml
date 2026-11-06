@@ -1,0 +1,61 @@
+name: ShopPlus - vérification manuelle gratuite
+
+# No scheduled runs and no automatic paid usage. Launch manually as needed.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Confirmer que le dépôt est privé
+        env:
+          REPO_PRIVATE: ${{ github.event.repository.private }}
+        run: |
+          if [ "$REPO_PRIVATE" != "true" ]; then
+            echo "::error::Dépôt public. Le propriétaire veut un dépôt privé : ne pas importer les sources complètes."
+            exit 1
+          fi
+
+      - name: Contrôler les fichiers sensibles
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess, sys
+          tracked = subprocess.check_output(['git', 'ls-files'], text=True).splitlines()
+          blocked = []
+          for p in tracked:
+              name = Path(p).name
+              if name.startswith('.env') and name != '.env.example':
+                  blocked.append(p)
+              elif name in ('id_rsa', 'id_ed25519') or name.endswith(('.pem', '.p12', '.pfx', '.key')):
+                  blocked.append(p)
+          if blocked:
+              print("Fichiers sensibles détectés :", *blocked, sep="\n")
+              sys.exit(1)
+          print("Contrôle des chemins sensibles : OK")
+          PY
+
+      - name: Vérifier le projet web si les sources ont été importées
+        run: |
+          if [ -f package.json ] && [ -f package-lock.json ]; then
+            npm ci --ignore-scripts
+            npm run build
+          else
+            echo "Source web non encore importée, contrôle NPM ignoré."
+          fi
+
+      - name: Vérifier les tests Python si disponibles
+        run: |
+          if [ -d tests ] && find tests -name 'test_*.py' -print -quit | grep -q .; then
+            python3 -m unittest discover -s tests
+          else
+            echo "Aucun test Python à exécuter."
+          fi
