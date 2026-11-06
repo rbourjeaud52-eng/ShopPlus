@@ -12,13 +12,21 @@ import os
 import sys
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-# Route API publiée par le client SDK du déploiement (pas le domaine de la SPA).
+# La cible doit provenir du manifeste GitHub, pas d'une URL dispersée.
+MANIFEST_PATH = Path(__file__).resolve().parents[1] / "deployments" / "staging.json"
+MANIFEST = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+APP_ID = MANIFEST["hosting"]["app_id"]
+STAGING_SITE = os.environ.get(
+    "SHOPPLUS_STAGING_URL", MANIFEST["hosting"]["https_url"]
+).rstrip("/")
+# Route publique publiée par le SDK de l'application hébergée.
 BASE_URL = os.environ.get(
     "SHOPPLUS_API_URL",
-    "https://api-v2.appdeploy.ai/app/shopplus-haiti-pilote-ub21b4",
+    "https://api-v2.appdeploy.ai/app/" + APP_ID,
 ).rstrip("/")
 TIMEOUT = 12
 
@@ -76,7 +84,23 @@ def check(predicate: bool, label: str) -> None:
 
 def main() -> int:
     print("ShopPlus — validation HTTPS sans vente ni paiement réels")
-    print("Cible:", BASE_URL)
+    print("Manifeste GitHub:", MANIFEST_PATH.relative_to(Path.cwd()))
+    print("Site:", STAGING_SITE)
+    print("API:", BASE_URL)
+    check(
+        MANIFEST["release_gates"]["production_ready"] is False,
+        "Ouverture commerciale toujours bloquée (release gate)",
+    )
+    check(
+        STAGING_SITE.startswith("https://") and BASE_URL.startswith("https://"),
+        "Les deux points d'accès utilisent HTTPS",
+    )
+    try:
+        with urlopen(Request(STAGING_SITE + "/", headers={"User-Agent":"ShopPlus-GitHub-Free-Release-Check/1.1"}), timeout=TIMEOUT) as page:
+            html = page.read(300000)
+            check(page.status == 200 and b"ShopPlus" in html, "La boutique web HTTPS répond")
+    except (URLError, TimeoutError, OSError) as exc:
+        raise AssertionError(f"Application web indisponible: {exc}") from exc
 
     health = request("GET", "/api/health")
     check(health.code == 200 and health.data.get("ok") is True,
