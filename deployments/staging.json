@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "app": "ShopPlus Haïti — Pilote",
+  "environment": "staging",
+  "github": {
+    "repository": "rbourjeaud52-eng/ShopPlus",
+    "branch": "main",
+    "visibility_at_last_check": "public",
+    "github_contains_hosted_app_source": false
+  },
+  "hosting": {
+    "provider": "AppDeploy",
+    "app_id": "shopplus-haiti-pilote-ub21b4",
+    "https_url": "https://shopplus-haiti-pilote-ub21b4.v2.appdeploy.ai/",
+    "snapshot_version": "1793949582642",
+    "automatic_deployment_from_github": false
+  },
+  "release_gates": {
+    "ssl_https": true,
+    "public_api_smoke_pass": true,
+    "public_api_smoke_run": "https://github.com/rbourjeaud52-eng/ShopPlus/actions/runs/42180227090",
+    "catalog_demo_only": true,
+    "quote_server_side_commission_bps": 500,
+    "cod_simulation_only": true,
+    "moncash_live": false,
+    "natcash_live": false,
+    "card_live": false,
+    "live_orders_enabled": false,
+    "github_full_source_synced": false,
+    "repo_private": false,
+    "auth_client_e2e_tested": false,
+    "seller_e2e_tested": false,
+    "admin_owner_allowlist_configured": false,
+    "admin_owner_e2e_tested": false,
+    "real_stock_integrated": false,
+    "legal_and_support_ready": false,
+    "production_ready": false
+  },
+  "notes": [
+    "Ce manifeste publie uniquement des métadonnées non sensibles.",
+    "Le commit GitHub n'entraîne pas un déploiement automatique vers AppDeploy.",
+    "L'actualisation de ce fichier déclenche le smoke test HTTPS GitHub Actions.",
+    "Ne pas ouvrir les ventes sans la validation de toutes les étapes de production."
+  ]
+}
