@@ -1,0 +1,21 @@
+# ShopPlus — do not commit secrets or compiled build output
+node_modules/
+dist/
+build/
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.key
+*.log
+.DS_Store
+.vscode/
+.idea/
+coverage/
+__pycache__/
+*.pyc
+.flutter-plugins*
+.dart_tool/
+android/local.properties
+ios/Flutter/Generated.xcconfig
