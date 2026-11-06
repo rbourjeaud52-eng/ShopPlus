@@ -121,6 +121,13 @@ def main() -> int:
         quote.data.get("kind") == "DEMO_ONLY",
         "Le devis indique DEMO_ONLY et ne crée pas de commande",
     )
+    total = quote.data.get("totalHTG")
+    expected_commission = (total * 500 + 5000) // 10000
+    check(
+        quote.data.get("commissionRateBps") == 500
+        and quote.data.get("commissionPreviewHTG") == expected_commission,
+        "Commission ShopPlus de 5 % calculée côté serveur (simulation)",
+    )
 
     rejected = request(
         "POST", "/api/demo/quote",
