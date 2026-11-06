@@ -10,6 +10,21 @@ L'application en ligne possède un catalogue de démonstration, un panier, une c
 
 > **Important : aucune vente ni transaction réelle n'est autorisée pour le moment.** Les produits affichés sont fictifs. MonCash, NatCash et les cartes bancaires n'encaissent aucun paiement.
 
+## Vérification GitHub → application HTTPS
+
+Le contrôle automatique **GitHub Actions** a réussi le 6 novembre 2026 :
+https://github.com/rbourjeaud52-eng/ShopPlus/actions/runs/42180389233
+
+Le fichier `deployments/staging.json` identifie la version AppDeploy active.
+Les scripts `scripts/smoke_https.py` valident HTTPS, API, catalogue, calcul
+des 5 % en mode test, modes de paiement désactivés et contrôles d'accès anonymes.
+
+Documentation : [Processus de livraison et limites](docs/PIPELINE-RELEASE.md).
+
+**Attention : les modifications du code GitHub ne déploient pas encore l'application AppDeploy.**
+Le code complet de l'application en ligne n'a pas encore été transféré sur GitHub ;
+le dépôt doit d'abord être privé.
+
 ## GitHub Free
 
 Ce dépôt sert à versionner le code. Le site HTTPS est hébergé séparément ; un dépôt GitHub Free ne constitue pas à lui seul un hébergement de backend commercial et de paiements.
