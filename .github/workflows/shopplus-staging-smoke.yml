@@ -1,0 +1,42 @@
+name: ShopPlus - QA HTTPS (GitHub Free)
+
+# Vérifie le prototype réellement hébergé, sans déployer ni débiter.
+# Ne pas confondre ce contrôle avec une publication automatique.
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/smoke_https.py
+      - .github/workflows/shopplus-staging-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shopplus-https-smoke
+  cancel-in-progress: true
+
+jobs:
+  shopplus-https-gate:
+    name: Tests HTTPS sans paiement
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    env:
+      SHOPPLUS_STAGING_URL: https://shopplus-haiti-pilote-ub21b4.v2.appdeploy.ai
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Télécharger le code de contrôle
+        uses: actions/checkout@v4
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Vérifier HTTPS, catalogue, devis, paiement test, droits anonymes
+        run: python scripts/smoke_https.py
+      - name: Afficher les limites de validation
+        if: success()
+        run: |
+          echo "Tests publics : PASS."
+          echo "⚠️ Les parcours authentifiés, webhooks MonCash / NatCash, vrais encaissements,"
+          echo "le stock réel et la publication depuis GitHub ne sont pas validés."
