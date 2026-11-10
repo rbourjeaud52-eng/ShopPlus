@@ -1,6 +1,6 @@
-# ShopPlus Haïti
+# ShopPlus
 
-Application e-commerce et marketplace conçue pour les clients et vendeurs en Haïti.
+ShopPlus est une marketplace multivendeur en développement, destinée à rapprocher vendeurs et acheteurs sur plusieurs marchés. La version pilote actuelle cible principalement Haïti ; les paiements et ventes réels restent désactivés.
 
 ## Version actuellement en ligne
 
